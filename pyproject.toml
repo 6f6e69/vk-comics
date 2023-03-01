@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "vk-comics"
+version = "0.1.0"
+description = ""
+authors = ["Alexander Mityukov <a.m.mityukov@gmail.com>"]
+readme = "README.md"
+packages = [{include = "vk_comics"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.28.2"
+environs = "^9.5.0"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+mypy = "^0.991"
+types-requests = "^2.28.11.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
