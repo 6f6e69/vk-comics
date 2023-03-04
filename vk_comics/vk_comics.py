@@ -23,12 +23,10 @@ class VkAPIerror(Exception):
     pass
 
 
-def raise_vk_response_for_error(response: dict) -> bool:
+def raise_vk_response_for_error(response: dict) -> None:
     if response.get('error'):
         raise VkAPIerror(f"Error code:{response['error']}"
                          f"{response['error']['error_msg']}")
-    else:
-        return True
 
 
 def get_wall_upload_server_url() -> str:
