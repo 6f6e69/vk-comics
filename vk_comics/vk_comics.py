@@ -32,13 +32,13 @@ def raise_vk_response_for_error(response: dict) -> None:
 def get_wall_upload_server_url() -> str:
     vk_api_url: str = 'https://api.vk.com/method/'
     method_name: str = 'photos.getWallUploadServer'
-    wall_upload_api_url: str = parse.urljoin(vk_api_url, method_name)
+    method_full_url: str = parse.urljoin(vk_api_url, method_name)
     params: dict[str, str] = {
         'access_token': main.vk_access_token,
         'group_id': main.vk_group_id,
         'v': '5.81',
     }
-    with requests.get(wall_upload_api_url, params) as response:
+    with requests.get(method_full_url, params) as response:
         response.raise_for_status()
         response: dict = response.json()
     raise_vk_response_for_error(response)
@@ -66,7 +66,7 @@ def save_wall_comic_image(vk_server: str,
                           comic_image_hash: str) -> tuple[str, str]:
     vk_api_url: str = 'https://api.vk.com/method/'
     method_name: str = 'photos.saveWallPhoto'
-    save_wall_photo_api_url: str = parse.urljoin(vk_api_url, method_name)
+    method_full_url: str = parse.urljoin(vk_api_url, method_name)
     params: dict[str, str] = {
         'access_token': main.vk_access_token,
         'group_id': main.vk_group_id,
@@ -75,7 +75,7 @@ def save_wall_comic_image(vk_server: str,
         'photo': comic_image_attributes,
         'hash': comic_image_hash,
     }
-    with requests.post(save_wall_photo_api_url, params=params) as response:
+    with requests.post(method_full_url, params=params) as response:
         response.raise_for_status()
         response: dict = response.json()
     raise_vk_response_for_error(response)
@@ -89,7 +89,7 @@ def publish_post_on_wall(comics_comment: str,
                          comics_image_owner_id: str) -> None:
     vk_api_url: str = 'https://api.vk.com/method/'
     method_name: str = 'wall.post'
-    public_pos_on_wall_api_url: str = parse.urljoin(vk_api_url, method_name)
+    method_full_url: str = parse.urljoin(vk_api_url, method_name)
     params: dict[str, str | int] = {
         'access_token': main.vk_access_token,
         'v': '5.81',
@@ -98,7 +98,7 @@ def publish_post_on_wall(comics_comment: str,
         'attachments': f"photo{comics_image_owner_id}_{comics_image_id}",
         'from_group': 1,
     }
-    with requests.post(public_pos_on_wall_api_url, params=params) as response:
+    with requests.post(method_full_url, params=params) as response:
         response.raise_for_status()
         response: dict = response.json()
     raise_vk_response_for_error(response)
