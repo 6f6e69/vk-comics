@@ -34,10 +34,11 @@ pip install -r requirements.txt
 
 ### Настройка проекта
 
-Для того чтобы взаимодействовать с API [vk.com](https://vk.com/):
+Для того чтобы взаимодействовать с API [Вконтакте](https://vk.com/):
 - [зарегистрируйте приложение](https://vk.com/dev) и получите `access_token`
 - узнайте `id` группы в которую будете размещать комиксы,
-[онлайн сервис]()
+[онлайн сервис](https://regvk.com/id/)
+
 Создайте в папке проекта `.env` файл и запишите туда `access_token` и `id` группы.
 ```
 VK_API_TOKEN=vk1.a.NF0yWo9VYmExAw3aw75DWJh6E2vcpP85mXYoKsf93b1rYHG
