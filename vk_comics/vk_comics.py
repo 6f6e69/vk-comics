@@ -29,13 +29,14 @@ def raise_vk_response_for_error(response: dict) -> None:
                          f"{response['error']['error_msg']}")
 
 
-def get_wall_upload_server_url() -> str:
+def get_wall_upload_server_url(vk_access_token: str,
+                               vk_group_id: str) -> str:
     vk_api_url: str = 'https://api.vk.com/method/'
     method_name: str = 'photos.getWallUploadServer'
     method_full_url: str = parse.urljoin(vk_api_url, method_name)
     params: dict[str, str] = {
-        'access_token': main.vk_access_token,
-        'group_id': main.vk_group_id,
+        'access_token': vk_access_token,
+        'group_id': vk_group_id,
         'v': '5.81',
     }
     with requests.get(method_full_url, params) as response:
@@ -61,15 +62,17 @@ def upload_comic_image(comic_wall_upload_server_url: str,
     return vk_server, comic_image_attributes, comic_image_hash
 
 
-def save_wall_comic_image(vk_server: str,
+def save_wall_comic_image(vk_access_token: str,
+                          vk_group_id: str,
+                          vk_server: str,
                           comic_image_attributes: str,
                           comic_image_hash: str) -> tuple[str, str]:
     vk_api_url: str = 'https://api.vk.com/method/'
     method_name: str = 'photos.saveWallPhoto'
     method_full_url: str = parse.urljoin(vk_api_url, method_name)
     params: dict[str, str] = {
-        'access_token': main.vk_access_token,
-        'group_id': main.vk_group_id,
+        'access_token': vk_access_token,
+        'group_id': vk_group_id,
         'v': '5.81',
         'server': vk_server,
         'photo': comic_image_attributes,
@@ -84,16 +87,18 @@ def save_wall_comic_image(vk_server: str,
     return comic_image_id, comic_image_owner_id
 
 
-def publish_post_on_wall(comics_comment: str,
+def publish_post_on_wall(vk_access_token: str,
+                         vk_group_id: str,
+                         comics_comment: str,
                          comics_image_id: str,
                          comics_image_owner_id: str) -> None:
     vk_api_url: str = 'https://api.vk.com/method/'
     method_name: str = 'wall.post'
     method_full_url: str = parse.urljoin(vk_api_url, method_name)
     params: dict[str, str | int] = {
-        'access_token': main.vk_access_token,
+        'access_token': vk_access_token,
         'v': '5.81',
-        'owner_id': f"-{main.vk_group_id}",
+        'owner_id': f"-{vk_group_id}",
         'message': comics_comment,
         'attachments': f"photo{comics_image_owner_id}_{comics_image_id}",
         'from_group': 1,
@@ -107,12 +112,14 @@ def publish_post_on_wall(comics_comment: str,
 def main() -> None:
     env: Env = Env()
     env.read_env()
-    main.vk_access_token: str = env('VK_API_TOKEN')
-    main.vk_group_id: str = env('VK_GROUP_ID')
+    vk_access_token: str = env('VK_API_TOKEN')
+    vk_group_id: str = env('VK_GROUP_ID')
     comic_image: BytesIO
     comic_comment: str
     comic_image, comic_comment = fetch_xkcd_comic()
-    comic_wall_upload_server_url: str = get_wall_upload_server_url()
+    comic_wall_upload_server_url: str = get_wall_upload_server_url(
+                                                      vk_access_token,
+                                                      vk_group_id)
     vk_server: str
     comic_image_attributes: str
     comic_image_hash: str
@@ -122,10 +129,16 @@ def main() -> None:
     comic_image_id: str
     comic_image_owner_id: str
     comic_image_id, comic_image_owner_id = save_wall_comic_image(
+                                                        vk_access_token,
+                                                        vk_group_id,
                                                         vk_server,
                                                         comic_image_attributes,
                                                         comic_image_hash)
-    publish_post_on_wall(comic_comment, comic_image_id, comic_image_owner_id)
+    publish_post_on_wall(vk_access_token,
+                         vk_group_id,
+                         comic_comment,
+                         comic_image_id,
+                         comic_image_owner_id)
 
 
 if __name__ == '__main__':
