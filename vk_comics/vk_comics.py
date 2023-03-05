@@ -7,7 +7,8 @@ from urllib import parse
 
 
 def fetch_xkcd_comic() -> tuple[BytesIO, str]:
-    comic_id: int = randint(1, 500)
+    xkcd_comics_amount: int = 2745
+    comic_id: int = randint(1, xkcd_comics_amount)
     comic_info_url: str = f"https://xkcd.com/{comic_id}/info.0.json"
     with requests.get(comic_info_url) as response:
         response.raise_for_status()
