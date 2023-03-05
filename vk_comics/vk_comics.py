@@ -1,6 +1,7 @@
-from environs import Env
-from random import randint
 from io import BytesIO
+from random import randint
+
+from environs import Env
 import requests
 from urllib import parse
 
